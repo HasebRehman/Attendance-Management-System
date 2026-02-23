@@ -1,9 +1,0 @@
-
-admin crediantials:
-email:  superadmin@gmail.com
-password: superAdmin@2024
-
-
-emp crediantials:
-email: haseebrehman@gmail.com
-password: 03197810023

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useContext } from 'react';
+import LoginContext from '../Contexts/LoginContext';
 import {
   Box,
   Typography,
@@ -10,10 +12,17 @@ import {
   Paper,
   InputLabel,
   CircularProgress,
+  AppBar,
+  Toolbar,
+  Chip,
 } from '@mui/material';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import LogoutRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import CustomShift from './CustomShift';
+
+const SIDEBAR_W = 240;
 
 // ── Shared MUI input style ────────────────────────────────────────────────────
 const inputSx = {
@@ -74,12 +83,15 @@ const EditEmployee = () => {
   const [employeeSchedule, setEmployeeSchedule] = useState('');
   const [loading, setLoading]             = useState(false);
   const [fetching, setFetching]           = useState(true);
+  const [openCustomShift, setOpenCustomShift] = useState(false);
+  const [getDataFromCustomShift, setGetDataFromCustomShift] = useState([]);
 
   const API_URL      = import.meta.env.VITE_API_URL;
   const navigate     = useNavigate();
   const { employeeId } = useParams();
 
   const set = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }));
+  
 
   // ── Load schedules ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -93,6 +105,8 @@ const EditEmployee = () => {
       } catch { toast.error('Failed to load schedules'); }
     })();
   }, []);
+
+  const { userData } = useContext(LoginContext);
 
   // ── Load employee data ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -116,10 +130,20 @@ const EditEmployee = () => {
           position:         d?.position              || '',
           bankAccount:      d?.bankAccount           || '',
           address:          d?.address               || '',
-          schedule:         d?.scheduleId?._id       || '',
+          schedule: d?.scheduleId?._id 
+          ? d.scheduleId._id 
+          : d?.customSchedule?.length 
+            ? "custom_shift"
+            : '',
         };
 
         setForm(loaded);
+
+        // if (!d?.scheduleId && d?.customSchedule?.length) {
+        //   console.log('cs', getDataFromCustomShift);
+          
+        // }
+
         setEmployeeSchedule(d?.scheduleId?.scheduleName || '');
         setOriginalData({
           fullName:               d?.fullName              || '',
@@ -171,7 +195,8 @@ const EditEmployee = () => {
           position:               form.position.trim(),
           bankAccount:            form.bankAccount.trim(),
           address:                form.address.trim(),
-          scheduleId:             form.schedule,
+          scheduleId:             form.schedule === "custom_shift"? null: form.schedule,
+          customSchedule: getDataFromCustomShift
         }),
       });
       await res.json();
@@ -195,9 +220,103 @@ const EditEmployee = () => {
     );
   }
 
+  const handleOpen = () => {
+    setOpenCustomShift(true);
+
+  }
+
+  const handleClose = () => {
+    setOpenCustomShift(false);
+
+  }
+
+  const handleDataFromCustomShift = (data) => {
+    setGetDataFromCustomShift(data);
+    // console.log('data from child in add employee', data);
+    
+
+  }
+
+  const userLogout = () => {
+    localStorage.removeItem("Token");
+    navigate("/login");
+  };
+
   // ── Render ──────────────────────────────────────────────────────────────────
   return (
     <Box className="min-h-screen w-full" sx={{ backgroundColor: '#eef0f8' }}>
+      <AppBar
+              position="fixed"
+              elevation={0}
+              sx={{
+                left: { xs: 0, md: `${SIDEBAR_W}px` },
+                width: { xs: "100%", md: `calc(100% - ${SIDEBAR_W}px)` },
+                background: "linear-gradient(110deg, #0f0c29 0%, #1a1340 55%, #24243e 100%)",
+                boxShadow: "0 3px 24px rgba(0,0,0,0.3)",
+                zIndex: 1200,
+              }}
+            >
+              <Toolbar className="flex items-center gap-4 px-8" sx={{ minHeight: "64px !important" }}>
+      
+                <Box className="flex flex-col leading-none">
+                  <span className="text-[0.6rem] font-medium tracking-[2px] uppercase text-white/35 mb-1">
+                    Welcome back
+                  </span>
+                  <span className="text-[1rem] font-bold text-[#e2d9fc]">
+                    {userData?.fullName ?? "Employee"}
+                  </span>
+                </Box>
+      
+                <Box className="flex-1" />
+      
+                <Chip
+                  label={userData?.role === 'admin' ? "Admin" : "Employee"}
+                  size="small"
+                  sx={{
+                    background: "rgba(167,139,250,0.14)",
+                    border: "1px solid rgba(167,139,250,0.28)",
+                    color: "#a78bfa",
+                    fontWeight: 700,
+                    fontSize: "0.65rem",
+                    letterSpacing: "1.3px",
+                    textTransform: "uppercase",
+                  }}
+                />
+      
+                <Button
+                  onClick={userLogout}
+                  startIcon={<LogoutRoundedIcon sx={{ fontSize: "17px !important", transition: "transform 0.25s ease" }} />}
+                  size="small"
+                  sx={{
+                    color: "#fca5a5",
+                    border: "1.5px solid rgba(251,113,133,0.35)",
+                    background: "rgba(239,68,68,0.1)",
+                    borderRadius: "10px",
+                    fontWeight: 600,
+                    fontSize: "0.82rem",
+                    px: 2,
+                    py: 1,
+                    textTransform: "none",
+                    transition: "all 0.25s ease",
+                    "&:hover": {
+                      color: "#fff",
+                      background: "rgba(239,68,68,0.22)",
+                      borderColor: "rgba(239,68,68,0.65)",
+                      boxShadow: "0 0 20px rgba(239,68,68,0.22)",
+                      transform: "translateY(-1px)",
+                      "& .MuiButton-startIcon svg": {
+                        transform: "translateX(4px) rotate(-10deg)",
+                      },
+                    },
+                    "&:active": { transform: "scale(0.96)" },
+                  }}
+                >
+                  Logout
+                </Button>
+      
+              </Toolbar>
+            </AppBar>
+
       <Box className="w-full" sx={{ pt: '45px', px: 3.5, pb: 6 }}>
 
         {/* ── Title card ──────────────────────────────────────────────────── */}
@@ -305,8 +424,15 @@ const EditEmployee = () => {
                     SelectProps={{
                       displayEmpty: true,
                       renderValue: (v) => {
-                        if (v) return schedules.find((s) => s._id === v)?.scheduleName || v;
-                        return <span style={{ color: '#94a3b8' }}>{employeeSchedule || 'Select Schedule'}</span>;
+                        if (!v) {
+                          return <span style={{ color: '#94a3b8' }}>Select Schedule</span>;
+                        }
+
+                        if (v === "custom_shift") {
+                          return "Custom Shift";
+                        }
+
+                        return schedules.find((s) => s._id === v)?.scheduleName || "Select Schedule";
                       },
                       MenuProps: {
                         PaperProps: {
@@ -328,6 +454,9 @@ const EditEmployee = () => {
                     {schedules.map((s) => (
                       <MenuItem key={s._id} value={s._id}>{s.scheduleName}</MenuItem>
                     ))}
+                    <MenuItem onClick={handleOpen} value="custom_shift">
+                      Custom Shift
+                    </MenuItem>
                   </TextField>
                 ) : (
                   <TextField
@@ -399,6 +528,11 @@ const EditEmployee = () => {
         @keyframes aeUp    { from { opacity:0; transform:translateY(20px)  } to { opacity:1; transform:translateY(0) } }
         @keyframes aeField { from { opacity:0; transform:translateY(10px)  } to { opacity:1; transform:translateY(0) } }
       `}</style>
+      <CustomShift
+        open={openCustomShift}
+        close={handleClose}
+        getData={handleDataFromCustomShift}
+      />
     </Box>
   );
 };

@@ -32,9 +32,13 @@ const inputSx = {
     padding: '10px 14px',
     color: '#1e293b',
     fontFamily: "'DM Sans', sans-serif",
+    backgroundColor: 'transparent',
     '&::placeholder': { color: '#94a3b8', opacity: 1 },
-    // Style the time picker icon
-    '&::-webkit-calendar-picker-indicator': { opacity: 0.5, cursor: 'pointer' },
+    '&::-webkit-calendar-picker-indicator': { 
+      opacity: 0.5, 
+      cursor: 'pointer',
+      filter: 'none',
+    },
   },
 };
 
@@ -573,11 +577,26 @@ const Schedule = () => {
         </Box>
       </Box>
 
-      {/* Global keyframes */}
+      {/* Global keyframes and time picker styles */}
       <style>{`
         @keyframes aeDown  { from { opacity:0; transform:translateY(-16px) } to { opacity:1; transform:translateY(0) } }
         @keyframes aeUp    { from { opacity:0; transform:translateY(20px)  } to { opacity:1; transform:translateY(0) } }
         @keyframes aeField { from { opacity:0; transform:translateY(10px)  } to { opacity:1; transform:translateY(0) } }
+        
+        /* Fix time picker dropdown blur background */
+        input[type="time"]::-webkit-calendar-picker-indicator {
+          background: transparent;
+          filter: none;
+        }
+        
+        input[type="time"]::-webkit-datetime-edit {
+          background: transparent;
+        }
+        
+        /* Ensure dropdown has solid background (browser-specific) */
+        input[type="time"]::-webkit-list-button {
+          background: #ffffff;
+        }
       `}</style>
     </Box>
   );

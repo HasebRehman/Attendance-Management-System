@@ -18,6 +18,39 @@ import NoAccountsRoundedIcon       from "@mui/icons-material/NoAccountsRounded";
 
 const SIDEBAR_W = 240;
 
+/* ── Keyframe styles injected once ── */
+const animationStyles = `
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0);    }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes countUp {
+    from { opacity: 0; transform: scale(0.75); }
+    to   { opacity: 1; transform: scale(1);    }
+  }
+  .dash-header-anim {
+    animation: fadeSlideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .dash-card-anim {
+    animation: fadeSlideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .dash-value-anim {
+    animation: countUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: inherit;
+  }
+`;
+
+if (typeof document !== "undefined" && !document.getElementById("dash-anim-styles")) {
+  const tag = document.createElement("style");
+  tag.id = "dash-anim-styles";
+  tag.textContent = animationStyles;
+  document.head.appendChild(tag);
+}
+
 const colorConfig = {
   violet:  { bg: "bg-violet-50",  border: "border-violet-200",  iconBg: "bg-violet-100",  iconColor: "text-violet-600" },
   amber:   { bg: "bg-amber-50",   border: "border-amber-200",   iconBg: "bg-amber-100",   iconColor: "text-amber-600"  },
@@ -27,12 +60,13 @@ const colorConfig = {
   indigo:  { bg: "bg-indigo-50",  border: "border-indigo-200",  iconBg: "bg-indigo-100",  iconColor: "text-indigo-600" },
 };
 
-const StatCard = ({ label, value, icon, color }) => {
+const StatCard = ({ label, value, icon, color, animDelay = 0 }) => {
   const cfg = colorConfig[color];
   return (
     <Paper
       elevation={0}
-      className={`relative overflow-hidden rounded-3xl border-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-default group h-full ${cfg.bg} ${cfg.border}`}
+      className={`dash-card-anim relative overflow-hidden rounded-3xl border-2 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-default group h-full ${cfg.bg} ${cfg.border}`}
+      style={{ animationDelay: `${animDelay}ms` }}
       sx={{
         display: "flex",
         flexDirection: "column",
@@ -46,13 +80,16 @@ const StatCard = ({ label, value, icon, color }) => {
     >
       {/* Top section: Icon and Label */}
       <Box className="flex items-start gap-4 mb-6">
-        <Box className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 ${cfg.iconBg}`}>
+        <Box
+          className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 ${cfg.iconBg}`}
+          sx={{ transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)" }}
+        >
           <span className={`${cfg.iconColor} [&>svg]:text-[32px]`}>{icon}</span>
         </Box>
         <Box className="flex-1">
-          <Typography 
+          <Typography
             className="text-base font-semibold text-gray-800 leading-snug"
-            sx={{ 
+            sx={{
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "-webkit-box",
@@ -67,8 +104,9 @@ const StatCard = ({ label, value, icon, color }) => {
 
       {/* Bottom section: Large Value */}
       <Box className="flex items-end justify-start pt-6 border-t border-gray-200/50">
-        <Typography 
-          className="text-5xl font-black text-gray-900 leading-none pt-4"
+        <Typography
+          className="dash-value-anim text-5xl font-black text-gray-900 leading-none pt-4"
+          style={{ animationDelay: `${animDelay + 120}ms` }}
           sx={{
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -96,6 +134,9 @@ const Dashboard = () => {
   const [attendanceTime, setAttendanceTime] = useState(null);
   const [employeeCount,  setEmployeeCount]  = useState(null);
 
+  // Re-trigger card animations when data refreshes
+  const [animKey, setAnimKey] = useState(0);
+
   const userLogout = () => {
     localStorage.removeItem("Token");
     navigate("/login");
@@ -116,6 +157,7 @@ const Dashboard = () => {
         );
         const d = await r.json();
         setEmployeeCount(d?.data);
+        setAnimKey(k => k + 1); // re-trigger animations on new data
       } catch (e) { console.error(e); }
     })();
   }, [selectedMonth, userData]);
@@ -131,6 +173,7 @@ const Dashboard = () => {
         );
         const d = await r.json();
         setAttendanceTime(d?.data);
+        setAnimKey(k => k + 1);
       } catch (e) { console.error(e); }
     })();
   }, [userData]);
@@ -159,11 +202,10 @@ const Dashboard = () => {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
-
   return (
     <Box className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50">
 
-      {/* ── TOPBAR: fixed, beside sidebar (UNCHANGED) ── */}
+      {/* ── TOPBAR: UNCHANGED ── */}
       <AppBar
         position="fixed"
         elevation={0}
@@ -244,13 +286,14 @@ const Dashboard = () => {
       >
         <Box className="w-full px-6 lg:px-8 py-6 flex flex-col gap-8">
 
-          {/* Header Card */}
+          {/* Header Card — subtle fade + slide up on mount */}
           <Paper
             elevation={0}
-            className="rounded-2xl border border-white/80 backdrop-blur-sm bg-white/40"
+            className="dash-header-anim rounded-2xl border border-white/80 backdrop-blur-sm bg-white/40"
             sx={{
               padding: "24px 32px",
               boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+              animationDelay: "0ms",
             }}
           >
             <Box className="flex items-center justify-between gap-6">
@@ -284,11 +327,14 @@ const Dashboard = () => {
             </Box>
           </Paper>
 
-          {/* Stats grid — Equal-sized cards using Tailwind */}
-          <Box className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-max">
-            {stats.map((s) => (
+          {/* Stats grid — staggered card entrance animation */}
+          <Box
+            key={animKey}
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 auto-rows-max"
+          >
+            {stats.map((s, i) => (
               <Box key={s.label} className="aspect-square">
-                <StatCard {...s} />
+                <StatCard {...s} animDelay={i * 80} />
               </Box>
             ))}
           </Box>
@@ -300,4 +346,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
