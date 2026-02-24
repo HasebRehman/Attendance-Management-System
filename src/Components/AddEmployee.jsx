@@ -4,6 +4,7 @@ import CustomShift from './CustomShift';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import LoginContext from '../Contexts/LoginContext';
+import ProfileImage from './ProfileImage';
 import {
   Box,
   Typography,
@@ -241,6 +242,7 @@ const { userData } = useContext(LoginContext);
                 >
                   Logout
                 </Button>
+                <ProfileImage />
       
               </Toolbar>
             </AppBar>

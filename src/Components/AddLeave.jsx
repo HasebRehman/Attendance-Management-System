@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import LoginContext from '../Contexts/LoginContext';
+import ProfileImage from './ProfileImage';
 import {
   Box, Typography, Paper, Button,
   TextField, MenuItem, AppBar, Toolbar, Chip, InputAdornment,
@@ -300,6 +301,7 @@ const AddLeave = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

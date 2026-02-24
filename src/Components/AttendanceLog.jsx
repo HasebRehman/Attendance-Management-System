@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import ProfileImage from "./ProfileImage";
 import {
   Box,
   Typography,
@@ -185,6 +186,7 @@ const AttendanceLog = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

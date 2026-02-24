@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginContext from "../Contexts/LoginContext";
+import ProfileImage from "./ProfileImage";
 import {
   Box, Typography, Button, Paper, IconButton,
   InputAdornment, TextField, Chip, AppBar, Toolbar, Collapse,
@@ -296,6 +297,7 @@ const Employees = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

@@ -64,6 +64,11 @@ const colorConfig = {
 const StatCard = ({ label, value, icon, color, animDelay = 0 }) => {
   const cfg = colorConfig[color];
 
+  const { userData, loading } = useContext(LoginContext);
+
+  if (loading) return <div>Loading...</div>;
+  if (!userData) return null;
+
 
 
   return (
@@ -150,6 +155,7 @@ const Dashboard = () => {
 
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 

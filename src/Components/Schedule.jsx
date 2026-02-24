@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import LoginContext from '../Contexts/LoginContext';
+import ProfileImage from './ProfileImage';
 import {
   Box, Typography, TextField, Button, Paper, InputLabel,
   IconButton, CircularProgress, AppBar, Toolbar, Chip
@@ -275,6 +276,7 @@ const Schedule = () => {
         >
           Logout
         </Button>
+        <ProfileImage />
 
       </Toolbar>
     </AppBar>

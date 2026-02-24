@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
+import ProfileImage from './ProfileImage';
 import LoginContext from '../Contexts/LoginContext';
 import {
   Box,
@@ -313,6 +314,7 @@ const EditEmployee = () => {
                 >
                   Logout
                 </Button>
+                <ProfileImage />
       
               </Toolbar>
             </AppBar>

@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginContext from '../Contexts/LoginContext';
 import { toast } from 'react-toastify';
+import ProfileImage from './ProfileImage';
 import {
   Modal, Box, AppBar, Toolbar, Chip, Button, Typography, Paper,
 } from '@mui/material';
@@ -392,6 +393,7 @@ const Attendance = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

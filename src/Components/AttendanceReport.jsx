@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import LoginContext from '../Contexts/LoginContext';
+import ProfileImage from './ProfileImage';
 import {
   Box,
   Typography,
@@ -216,6 +217,7 @@ const AttendanceReport = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

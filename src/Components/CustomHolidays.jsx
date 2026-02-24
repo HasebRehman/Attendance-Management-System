@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
+import ProfileImage from './ProfileImage';
 import LoginContext from '../Contexts/LoginContext';
 import {
   Box,
@@ -261,6 +262,7 @@ const CustomHolidays = () => {
                 >
                   Logout
                 </Button>
+                <ProfileImage />
       
               </Toolbar>
             </AppBar>

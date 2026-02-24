@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { toast } from "react-toastify";
 import LoginContext from "../Contexts/LoginContext";
+import ProfileImage from "./ProfileImage";
 import {
   AppBar, Toolbar, Chip, Button, Typography, Paper, Box,
 } from "@mui/material";
@@ -253,6 +254,7 @@ const History = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

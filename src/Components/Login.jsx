@@ -21,6 +21,8 @@ import ArrowForwardRoundedIcon     from "@mui/icons-material/ArrowForwardRounded
 const Login = () => {
   const API_URL = import.meta.env.VITE_API_URL;
 
+  const { setUserData } = useContext(LoginContext);
+
   const [email,        setEmail]        = useState("");
   const [password,     setPassword]     = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +69,7 @@ const Login = () => {
       
       if (result.isSuccess) {
         localStorage.setItem("Token", result.data.token.accessToken);
-        setName(result.data.userObject);
+        setUserData(result.data.userObject);
         navigate("/dashboard");
       } else {
         setError(result.message);
