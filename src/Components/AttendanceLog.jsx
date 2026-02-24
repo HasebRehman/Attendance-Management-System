@@ -98,7 +98,7 @@ const AttendanceLog = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${API_URL}/attendance/attendanceLog?count=10&pageNo=1&specificDate=${selectedDate}`,
+        `${API_URL}/attendance/attendanceLog?count=100&pageNo=1&specificDate=${selectedDate}`,
         { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
       );
       const result = await res.json();

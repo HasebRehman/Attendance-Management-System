@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import Login from './Components/Login'
 import Dashboard from './Components/Dashboard'
 import LoginContextProvider from './Contexts/LoginContextProvider'
@@ -21,7 +21,8 @@ import AttendanceLog from './Components/AttendanceLog'
 import AttendanceReport from './Components/AttendanceReport'
 import { useContext } from 'react'
 import LoginContext from './Contexts/LoginContext'
-import Loader from './Loader/Loader' // ⬅️ Loader component
+import Loader from './Loader/Loader'
+
 
 function AppContent({ router }) {
   const { loading } = useContext(LoginContext); // ⬅️ login context se loader state
@@ -45,6 +46,10 @@ function App() {
       path: "/",
       element: <Token> <Home /> </Token> ,
       children: [
+        {
+          index: true,
+          element: <Navigate to="dashboard" replace />
+        },
         {
           path: "dashboard",
           element: 

@@ -63,6 +63,8 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
       const result = await response.json();
+    
+      
       if (result.isSuccess) {
         localStorage.setItem("Token", result.data.token.accessToken);
         setName(result.data.userObject);
@@ -308,6 +310,8 @@ const Login = () => {
                 </Typography>
               </Box>
             )}
+
+            <button>Forgot Password</button>
 
             {/* Login button */}
             <Button

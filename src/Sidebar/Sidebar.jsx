@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Box, CssBaseline, IconButton, Typography, Drawer } from "@mui/material";
 
@@ -367,7 +367,11 @@ const Sidebar = () => {
     { text: "History",    path: "/history",    icon: <HistoryRoundedIcon /> },
   ];
 
-  const menuItems = userData?.role === "admin" ? adminMenu : userMenu;
+    
+    const menuItems = userData?.role === "admin" ? adminMenu : userMenu;
+  
+
+  console.log(menuItems);
 
   return (
     <>

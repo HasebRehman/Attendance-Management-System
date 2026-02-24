@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Box, Button, Chip, Typography, Paper } from "@mui/material";
 import LoginContext from "../Contexts/LoginContext";
+import ProfileImage from "./ProfileImage";
 
 import LogoutRoundedIcon           from "@mui/icons-material/LogoutRounded";
 import BadgeRoundedIcon            from "@mui/icons-material/BadgeRounded";
@@ -62,6 +63,9 @@ const colorConfig = {
 
 const StatCard = ({ label, value, icon, color, animDelay = 0 }) => {
   const cfg = colorConfig[color];
+
+
+
   return (
     <Paper
       elevation={0}
@@ -122,7 +126,7 @@ const StatCard = ({ label, value, icon, color, animDelay = 0 }) => {
 
 const Dashboard = () => {
   const navigate     = useNavigate();
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
   const API_URL      = import.meta.env.VITE_API_URL;
 
   const today        = new Date();
@@ -133,9 +137,16 @@ const Dashboard = () => {
   const [selectedMonth,  setSelectedMonth]  = useState(isAdmin ? currentDate : currentMonth);
   const [attendanceTime, setAttendanceTime] = useState(null);
   const [employeeCount,  setEmployeeCount]  = useState(null);
+  const [year, setYear] = useState(0);
+  const [month, setMonth] = useState(0);
+  const [empDocId, setEmpDocId] = useState('');
 
   // Re-trigger card animations when data refreshes
   const [animKey, setAnimKey] = useState(0);
+
+  // const { name } = useContext(LoginContext);
+  // console.log(name);
+  
 
   const userLogout = () => {
     localStorage.removeItem("Token");
@@ -162,21 +173,50 @@ const Dashboard = () => {
     })();
   }, [selectedMonth, userData]);
 
+  const employeeYear = today.getFullYear();
+  const employeeMonth = today.getMonth();
+
+  // console.log('empMonth', employeeMonth);
+  
+
+  useEffect(() => {
+    if (!userData || isAdmin || !selectedMonth) return;
+
+    const [y, m] = selectedMonth.split("-");
+
+    setYear(Number(y));
+    setMonth(Number(m));
+    setEmpDocId(userData._id);
+
+  }, [selectedMonth, userData]);
+
+
   useEffect(() => {
     if (isAdmin) return;
+    if (!year || !month || !empDocId) return;
+
     (async () => {
       try {
-        const year = today.getFullYear();
         const r = await fetch(
-          `${API_URL}/attendance/employeeAttendanceByYear?year=${year}`,
-          { headers: { Authorization: `Bearer ${localStorage.getItem("Token")}` } }
+          `${API_URL}/attendance/employeeStats?year=${year}&month=${month}&empDocId=${empDocId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("Token")}`
+            }
+          }
         );
+
         const d = await r.json();
         setAttendanceTime(d?.data);
         setAnimKey(k => k + 1);
-      } catch (e) { console.error(e); }
+
+      } catch (e) {
+        console.error(e);
+      }
     })();
-  }, [userData]);
+
+  }, [year, month, empDocId, isAdmin]);
+
 
   const adminStats = [
     { label: "Total Employees",  value: employeeCount?.totalEmployees, icon: <PeopleAltRoundedIcon />,           color: "violet"  },
@@ -188,12 +228,12 @@ const Dashboard = () => {
   ];
 
   const userStats = [
-    { label: "Employee ID",       value: userData?.employeeId,               icon: <BadgeRoundedIcon />,          color: "violet"  },
-    { label: "Assigned Schedule", value: userData?.scheduleId?.scheduleName, icon: <CalendarMonthRoundedIcon />,  color: "amber"   },
-    { label: "On Time Days",      value: attendanceTime?.totalOnTimeDays,    icon: <CheckCircleRoundedIcon />,    color: "emerald" },
-    { label: "Late Days",         value: attendanceTime?.totalLateDays,      icon: <AccessAlarmRoundedIcon />,    color: "rose"    },
-    { label: "On Leave Days",     value: attendanceTime?.totalLeaveDays,     icon: <BeachAccessRoundedIcon />,    color: "sky"     },
-    { label: "Absent Days",       value: attendanceTime?.totalAbsentDays,    icon: <PersonOffRoundedIcon />,      color: "indigo"  },
+    { label: "Employee ID",       value: attendanceTime?.employeeId,               icon: <BadgeRoundedIcon />,          color: "violet"  },
+    { label: "Assigned Schedule", value: attendanceTime?.assignedSchedule, icon: <CalendarMonthRoundedIcon />,  color: "amber"   },
+    { label: "On Time Days",      value: attendanceTime?.onTimeDays,    icon: <CheckCircleRoundedIcon />,    color: "emerald" },
+    { label: "Late Days",         value: attendanceTime?.lateDays,      icon: <AccessAlarmRoundedIcon />,    color: "rose"    },
+    { label: "On Leave Days",     value: attendanceTime?.onLeaveDays,     icon: <BeachAccessRoundedIcon />,    color: "sky"     },
+    { label: "Absent Days",       value: attendanceTime?.absentDays,    icon: <PersonOffRoundedIcon />,      color: "indigo"  },
   ];
 
   const stats = isAdmin ? adminStats : userStats;
@@ -274,6 +314,7 @@ const Dashboard = () => {
           >
             Logout
           </Button>
+          <ProfileImage />
 
         </Toolbar>
       </AppBar>

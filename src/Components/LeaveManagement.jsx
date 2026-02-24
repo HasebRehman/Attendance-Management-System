@@ -108,6 +108,7 @@ const LeaveManagement = () => {
         headers: { 'Content-Type':'application/json', Authorization:`Bearer ${localStorage.getItem('Token')}` },
       });
       const result = await res.json();
+      
       setLeaves(result.data || []);
       setAnimKey(k => k + 1);
     } catch { setLeaves([]); }

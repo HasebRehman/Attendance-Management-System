@@ -70,10 +70,11 @@ const AttendanceReport = () => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${API_URL}/attendance/report?count=10&pageNo=1&year=${year}&month=${monthNumber}`,
+        `${API_URL}/attendance/report?count=100&pageNo=1&year=${year}&month=${monthNumber}`,
         { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('Token')}` } }
       );
       const result = await res.json();
+      
       setAttendanceReport(result.data || []);
       setAnimKey(k => k + 1);
     } catch (e) {
@@ -320,7 +321,7 @@ const AttendanceReport = () => {
 
                 {/* ── Sticky header ── */}
                 <Box sx={{
-                    padding: '10px 5px 5px',
+                  padding: '10px 5px 5px',
                   display: "grid",
                   gridTemplateColumns: `44px 200px 130px repeat(${attendanceDatesAndDays.length}, 46px)`,
                   background: "linear-gradient(110deg,#0f0c29,#1a1340 55%,#24243e)",
