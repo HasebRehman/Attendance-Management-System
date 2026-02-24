@@ -313,8 +313,6 @@ const Login = () => {
               </Box>
             )}
 
-            <button>Forgot Password</button>
-
             {/* Login button */}
             <Button
               fullWidth
