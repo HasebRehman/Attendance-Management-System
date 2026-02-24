@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import LoginContext from '../Contexts/LoginContext';
 import ProfileImage from './ProfileImage';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -16,7 +17,7 @@ import {
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
-import LogoutRoundedIcon from "@mui/icons-material/AssessmentRounded";
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 /* ── Keyframes injected once ── */
 const STYLES = `
@@ -66,6 +67,8 @@ const AttendanceReport = () => {
   const [attendanceReport, setAttendanceReport]         = useState([]);
   const [animKey, setAnimKey]                           = useState(0);
   const [loading, setLoading]                           = useState(false);
+
+  const navigate = useNavigate();
 
   const getAttendanceReport = async (year, monthNumber) => {
     setLoading(true);
@@ -138,10 +141,11 @@ const AttendanceReport = () => {
     return { p, a, h };
   };
 
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
 
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 

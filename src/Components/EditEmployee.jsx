@@ -20,7 +20,7 @@ import {
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
-import LogoutRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import CustomShift from './CustomShift';
 
 const SIDEBAR_W = 240;
@@ -107,7 +107,7 @@ const EditEmployee = () => {
     })();
   }, []);
 
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
 
   // ── Load employee data ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -202,6 +202,7 @@ const EditEmployee = () => {
       });
       await res.json();
       toast.success('Employee updated successfully');
+      setUserData(null);
       navigate('/employees');
     } catch { toast.error('Something went wrong'); }
     finally { setLoading(false); }

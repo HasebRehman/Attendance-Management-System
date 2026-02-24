@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import LoginContext from '../Contexts/LoginContext';
 import ProfileImage from './ProfileImage';
+import { useNavigate } from 'react-router-dom';
 import {
   Box, Typography, TextField, Button, Paper, InputLabel,
   IconButton, CircularProgress, AppBar, Toolbar, Chip
@@ -13,7 +14,9 @@ import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import UpdateRoundedIcon from '@mui/icons-material/UpdateRounded';
-import LogoutRoundedIcon from '@mui/icons-material/UpdateRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+
+const SIDEBAR_W = 240;
 
 // ── Shared input style ────────────────────────────────────────────────────────
 const inputSx = {
@@ -89,10 +92,17 @@ const Schedule = () => {
   const [deletingId, setDeletingId]         = useState(null);
 
   const { userData } = useContext(LoginContext);
+  const { setUserData } = useContext(LoginContext);
+
+  const navigate = useNavigate();
 
   const API_URL = import.meta.env.VITE_API_URL;
   const set     = (key) => (e) => setForm((p) => ({ ...p, [key]: e.target.value }));
-  const userLogout   = ()   => { localStorage.removeItem("Token"); navigate("/login"); };
+  const userLogout = () => {
+    localStorage.removeItem("Token");
+    setUserData(null);
+    navigate("/login");
+  };
 
   const headers = {
     'Content-Type': 'application/json',
@@ -209,77 +219,77 @@ const Schedule = () => {
     <Box className="min-h-screen w-full" sx={{ backgroundColor: '#eef0f8' }}>
 
     <AppBar
-      position="fixed"
-      elevation={0}
-      sx={{
-        left: { xs: 0, md: `240px` },
-        width: { xs: "100%", md: `calc(100% - 240px)` },
-        background: "linear-gradient(110deg, #0f0c29 0%, #1a1340 55%, #24243e 100%)",
-        boxShadow: "0 3px 24px rgba(0,0,0,0.3)",
-        zIndex: 1200,
-      }}
-    >
-      <Toolbar className="flex items-center gap-4 px-8" sx={{ minHeight: "64px !important" }}>
+        position="fixed"
+        elevation={0}
+        sx={{
+          left: { xs: 0, md: `${SIDEBAR_W}px` },
+          width: { xs: "100%", md: `calc(100% - ${SIDEBAR_W}px)` },
+          background: "linear-gradient(110deg, #0f0c29 0%, #1a1340 55%, #24243e 100%)",
+          boxShadow: "0 3px 24px rgba(0,0,0,0.3)",
+          zIndex: 1200,
+        }}
+      >
+        <Toolbar className="flex items-center gap-4 px-8" sx={{ minHeight: "64px !important" }}>
 
-        <Box className="flex flex-col leading-none">
-          <span className="text-[0.6rem] font-medium tracking-[2px] uppercase text-white/35 mb-1">
-            Welcome back
-          </span>
-          <span className="text-[1rem] font-bold text-[#e2d9fc]">
-            {userData?.fullName ?? "Employee"}
-          </span>
-        </Box>
+          <Box className="flex flex-col leading-none">
+            <span className="text-[0.6rem] font-medium tracking-[2px] uppercase text-white/35 mb-1">
+              Welcome back
+            </span>
+            <span className="text-[1rem] font-bold text-[#e2d9fc]">
+              {userData?.fullName ?? "Employee"}
+            </span>
+          </Box>
 
-        <Box className="flex-1" />
+          <Box className="flex-1" />
 
-        <Chip
-          label={userData?.role === 'admin' ? "Admin" : "Employee"}
-          size="small"
-          sx={{
-            background: "rgba(167,139,250,0.14)",
-            border: "1px solid rgba(167,139,250,0.28)",
-            color: "#a78bfa",
-            fontWeight: 700,
-            fontSize: "0.65rem",
-            letterSpacing: "1.3px",
-            textTransform: "uppercase",
-          }}
-        />
+          <Chip
+            label={userData?.role === 'admin' ? "Admin" : "Employee"}
+            size="small"
+            sx={{
+              background: "rgba(167,139,250,0.14)",
+              border: "1px solid rgba(167,139,250,0.28)",
+              color: "#a78bfa",
+              fontWeight: 700,
+              fontSize: "0.65rem",
+              letterSpacing: "1.3px",
+              textTransform: "uppercase",
+            }}
+          />
 
-        <Button
-          onClick={userLogout}
-          startIcon={<LogoutRoundedIcon sx={{ fontSize: "17px !important", transition: "transform 0.25s ease" }} />}
-          size="small"
-          sx={{
-            color: "#fca5a5",
-            border: "1.5px solid rgba(251,113,133,0.35)",
-            background: "rgba(239,68,68,0.1)",
-            borderRadius: "10px",
-            fontWeight: 600,
-            fontSize: "0.82rem",
-            px: 2,
-            py: 1,
-            textTransform: "none",
-            transition: "all 0.25s ease",
-            "&:hover": {
-              color: "#fff",
-              background: "rgba(239,68,68,0.22)",
-              borderColor: "rgba(239,68,68,0.65)",
-              boxShadow: "0 0 20px rgba(239,68,68,0.22)",
-              transform: "translateY(-1px)",
-              "& .MuiButton-startIcon svg": {
-                transform: "translateX(4px) rotate(-10deg)",
+          <Button
+            onClick={userLogout}
+            startIcon={<LogoutRoundedIcon sx={{ fontSize: "17px !important", transition: "transform 0.25s ease" }} />}
+            size="small"
+            sx={{
+              color: "#fca5a5",
+              border: "1.5px solid rgba(251,113,133,0.35)",
+              background: "rgba(239,68,68,0.1)",
+              borderRadius: "10px",
+              fontWeight: 600,
+              fontSize: "0.82rem",
+              px: 2,
+              py: 1,
+              textTransform: "none",
+              transition: "all 0.25s ease",
+              "&:hover": {
+                color: "#fff",
+                background: "rgba(239,68,68,0.22)",
+                borderColor: "rgba(239,68,68,0.65)",
+                boxShadow: "0 0 20px rgba(239,68,68,0.22)",
+                transform: "translateY(-1px)",
+                "& .MuiButton-startIcon svg": {
+                  transform: "translateX(4px) rotate(-10deg)",
+                },
               },
-            },
-            "&:active": { transform: "scale(0.96)" },
-          }}
-        >
-          Logout
-        </Button>
-        <ProfileImage />
+              "&:active": { transform: "scale(0.96)" },
+            }}
+          >
+            Logout
+          </Button>
+          <ProfileImage />
 
-      </Toolbar>
-    </AppBar>
+        </Toolbar>
+      </AppBar>
 
 
       <Box sx={{ pt: '45px', px: 3.5, pb: 6 }}>

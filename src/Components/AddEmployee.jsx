@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import PersonAddAltRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
-import LogoutRoundedIcon from '@mui/icons-material/PersonAddAltRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 // ── Shared MUI input style — matches website palette ──────────────────────────
 const inputSx = {
@@ -85,7 +85,7 @@ const AddEmployee = () => {
   const [openCustomShift, setOpenCustomShift] = useState(false);
   const [getDataFromCustomShift, setGetDataFromCustomShift] = useState([]);
   
-const { userData } = useContext(LoginContext);
+const { userData, setUserData } = useContext(LoginContext);
 
   const API_URL                   = import.meta.env.VITE_API_URL;
   const navigate                  = useNavigate();
@@ -168,6 +168,7 @@ const { userData } = useContext(LoginContext);
 
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 

@@ -13,7 +13,7 @@ import EditRoundedIcon      from '@mui/icons-material/EditRounded';
 import AddRoundedIcon       from '@mui/icons-material/AddRounded';
 import BadgeRoundedIcon     from '@mui/icons-material/BadgeRounded';
 import EventNoteRoundedIcon from '@mui/icons-material/EventNoteRounded';
-import LogoutRoundedIcon  from '@mui/icons-material/EventNoteRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 
 /* ── Keyframes ── */
 const STYLES = `
@@ -101,7 +101,7 @@ const LeaveManagement = () => {
   const [leaves, setLeaves]   = useState([]);
   const [animKey, setAnimKey] = useState(0);
 
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
 
   const fetchLeaves = async () => {
     try {
@@ -132,6 +132,7 @@ const LeaveManagement = () => {
 
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 

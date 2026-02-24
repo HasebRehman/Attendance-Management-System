@@ -18,7 +18,7 @@ import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import AccessTimeRoundedIcon   from '@mui/icons-material/AccessTimeRounded';
 import NotesRoundedIcon        from '@mui/icons-material/NotesRounded';
 import CheckCircleRoundedIcon  from '@mui/icons-material/CheckCircleRounded';
-import LogoutRoundedIcon  from '@mui/icons-material/CheckCircleRounded';
+import LogoutRoundedIcon           from "@mui/icons-material/LogoutRounded";
 
 /* ── Keyframes ── */
 const STYLES = `
@@ -115,7 +115,7 @@ const AddLeave = () => {
   const [leaveData,    setLeaveData]       = useState({});
   const [compareData,  setCompareData]     = useState({});
 
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
 
   const API_URL  = import.meta.env.VITE_API_URL;
   const { id }   = useParams();
@@ -226,6 +226,7 @@ const AddLeave = () => {
 
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useContext } from 'react';
 import ProfileImage from './ProfileImage';
+import { useNavigate } from 'react-router-dom';
 import LoginContext from '../Contexts/LoginContext';
 import {
   Box,
@@ -22,7 +23,7 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import BeachAccessRoundedIcon from '@mui/icons-material/BeachAccessRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
-import LogoutRoundedIcon from '@mui/icons-material/CheckRounded';
+import LogoutRoundedIcon           from "@mui/icons-material/LogoutRounded";
 
 /* ── Keyframes ── */
 const STYLES = `
@@ -85,6 +86,8 @@ const CustomHolidays = () => {
   const [editHolidayId, setEditHolidayId] = useState('');
   const [removeDelete, setRemoveDelete]   = useState(false);
   const [rowAnimKey, setRowAnimKey]       = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => { setSelectedDays(savedDays); }, []);
   useEffect(() => { getHolidayData(); }, []);
@@ -183,10 +186,11 @@ const CustomHolidays = () => {
     } else { toast.error('Holiday not deleted'); }
   };
 
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
 
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 

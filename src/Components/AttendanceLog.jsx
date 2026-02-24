@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ProfileImage from "./ProfileImage";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -13,7 +14,7 @@ import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";
 import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
-import LogoutRoundedIcon from "@mui/icons-material/ListAltRounded";
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { useContext } from "react";
 import LoginContext from "../Contexts/LoginContext";
 
@@ -83,15 +84,18 @@ const AttendanceLog = () => {
   const API_URL = import.meta.env.VITE_API_URL;
   const currentDate = new Date().toISOString().slice(0, 10);
 
-  const { userData } = useContext(LoginContext);
+  const { userData, setUserData } = useContext(LoginContext);
 
   const [attendanceDate, setAttendanceDate] = useState(currentDate);
   const [attendanceLogs, setAttendanceLogs] = useState([]);
   const [animKey, setAnimKey] = useState(0);
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const userLogout = () => {
     localStorage.removeItem("Token");
+    setUserData(null);
     navigate("/login");
   };
 
